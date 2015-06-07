@@ -372,7 +372,7 @@ Interface.prototype.checkCommand = function(cname) {
  */
 Interface.prototype.parse = function(input) {
 	
-	var strings = input.trim().split(/\s+/g),
+	var strings = input.trim().match(/(?:[^\s"]+|"[^"]*")+/g),
 		args    = [],
 		error   = false;
 
