@@ -747,24 +747,5 @@ Interface.Command.prototype.removeParams = function(params) {
 	return this;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Export Interface Class
 exports = module.exports = Interface;
