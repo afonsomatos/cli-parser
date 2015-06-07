@@ -1,0 +1,19 @@
+{
+	"name": "cli-parser",
+	"version": "1.0.0",
+	"description": "low-level extensible command-line parser",
+	"keywords": [
+		"command",
+		"option",
+		"parser"
+	],
+	"author": "Afonso Matos <contact@afonsomatos.com>",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/afonsomatos/cli-parser.js.git"
+	},
+	"files": [
+		"cli-parser.js"
+	]
+}
