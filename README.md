@@ -3,6 +3,11 @@ cli-parser
 
 cli-parser is an easy and simple-to-use command line parser for creating dynamic CLI apps
 
+Npm package is available
+```
+npm install cli-parser
+```
+
 Setup interface
 ===============
 
