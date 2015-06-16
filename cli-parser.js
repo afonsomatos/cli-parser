@@ -1,5 +1,5 @@
 /*!
- * CLI-parser (in-dev) @07-06-15
+ * CLI-parser (in-dev) @16-06-15
  * Simple to use and low-level command line parser
  * http://github.com/afonsomatos/cli-parser
  * 
@@ -48,7 +48,6 @@ var Interface = function(config) {
 	// Create default help method
 	var help = this.command('help', {
 		desc: 'Find information about the program',
-		options: [{short: 'd', long:'dog', param:'bitch', desc: 'doggie doo'}]
 	});
 	
 	help.callBack(function(/*[opts]*/) {
@@ -160,13 +159,10 @@ Interface.format = function(str, obj) {
 
 	var search;
 
-	for (var key in obj) {
-		// Use hasOwnPropety due to the possible prototype extension
-		if (obj.hasOwnProperty(key)) {
-			search = "{" + key + "}";
-			while (str.includes(search)) str = str.replace(search, obj[key]);
-		}
-	}
+	Object.keys(obj).forEach(function (key) {
+		search = "{" + key + "}";
+		while (str.contains(search)) str = str.replace(search, obj[key]);
+	});
 	
 	return str;
 };
