@@ -161,13 +161,11 @@ Interface.format = function(str, obj) {
 
 	Object.keys(obj).forEach(function (key) {
 		search = "{" + key + "}";
-		while (str.contains(search)) str = str.replace(search, obj[key]);
+		while (str.includes(search)) str = str.replace(search, obj[key]);
 	});
 	
 	return str;
 };
-
-
 
 /**
  * Output error to the program or calls error's handler
