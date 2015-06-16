@@ -19,21 +19,23 @@ var cli = new Interface({
 	name: 'Name of my program',
 	desc: 'Detailed description',
 	version: '1.0.0',
-	outfn: console.log // Function that will output results
+	outfn: function (data) { // Function that will output results
+		process.stdout.write(data + '\n');
+	}
 })
 
 // Start by adding a command
 cli
 	.command('add', {
-		params: '[number] [number]', 
+		params: '[Number, Number]', 
 		desc: 'Adds two numbers' 
 	})
 	.option('t', 'third', '[number]', 'Adds a third number')
-	.callBack(function (opts, n1, n2, n3) {
+	.callBack(function (opts, n1, n2) {
 	
-		var sum = +n1 + +n2 + (opts.get('third') || 0);
+		var sum = +n1 + +n2 + (+opts.get('third') || 0);
 
-		cli.output('Result: ', sum);
+		cli.output('Result: ' + sum);
 	});
 
 cli.parse('add 1 2 --third=32');
