@@ -26,7 +26,6 @@ describe('Output functions stacking', function () {
 
         var f1 = new Function(),
             f2 = new Function();
-
         
         for (var i = 0; i < 10; i++) cli.addOutfn(f1);
         for (var i = 0; i < 30; i++) cli.addOutfn(f2);

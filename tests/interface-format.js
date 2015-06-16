@@ -13,7 +13,7 @@ describe('String and object formatting', function () {
         assert.equal(str2, 'Puff: woof!');
         assert.equal(str3, 'I love JS');
 
-        });
+    });
 
     it('should throw error if non-object was passed', function () {
 
