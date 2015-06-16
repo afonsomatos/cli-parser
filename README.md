@@ -66,25 +66,25 @@ Interface.Command
 
 cli
 	.add('commandName', {
-		params: '[param1] [param2]',
+		params: '[String, String]',
 		desc: 'Useful command description',
 	})
 	.option({ short: 'l', long: 'lol', param: '[number]', desc: 'Do something' })
 	.callBack(function (opts, p1, p2, p3) {
 		
-		opts.get('long'); // Gets the corresponding value || null
+		opts.get('lol'); // Gets the corresponding value || null
 		opts.has('s');    // returns true or false
 
 		// opts.get takes a callBack to execute the returning value
-		opts.get('long', function (val) {
+		opts.get('lol', function (val) {
 			return Number(val);
 		});
 
 		// This works too
-		opts.get('long', Number);
+		opts.get('lol', Number);
 
 		// Or this
-		Number(opt.get('long'));
+		Number(opt.get('lol'));
 		
 		// Are given as strings
 		p1; p2;
