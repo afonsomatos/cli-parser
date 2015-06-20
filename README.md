@@ -98,7 +98,7 @@ cli.parse('help');
 
 That should be enough to get you started.
 
-Be sure to check `/examples/` for some for some tests and snippets of working code.
+Be sure to check `/examples/` for some tests and snippets of working code.
 The source code `cli-parser.js` has very detailed comments, take a look if you have some trouble.
 
 License
