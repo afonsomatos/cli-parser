@@ -7,12 +7,12 @@ const Interface = require('../cli-parser');
 var cli = new Interface({ outfn: console.log });
 
 cli
-	.command('process-argv', function (opts, str) {
-		cli.output(str);
-		if (opts.has('twice'))
-			cli.output(str);
-	})
-	.option('t', 'twice', '', 'Output twice');
+    .command('process-argv', function (opts, str) {
+        cli.output(str);
+        if (opts.has('twice'))
+            cli.output(str);
+    })
+    .option('t', 'twice', '', 'Output twice');
 
 /*
  * Process.argv should return 

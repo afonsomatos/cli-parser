@@ -7,9 +7,9 @@ const Interface = require('../cli-parser');
  * default-help command
  */
 var cli = new Interface({
-	name: 'My program',
-	version: '1.0.0',
-	outfn: console.log
+    name: 'My program',
+    version: '1.0.0',
+    outfn: console.log
 });
 
 /*

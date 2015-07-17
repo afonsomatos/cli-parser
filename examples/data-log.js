@@ -2,15 +2,15 @@
 const Interface = require('../cli-parser');
 
 var cli = new Interface({ outfn: console.log }),
-	datalog = "";
+    datalog = "";
 
 /*
  * cli.output calls every outfn from the output stack
  * addOutfn and use it as a data-logger
  */
 cli.addOutfn(function(data) {
-	
-	datalog += Date() + ' >>\n' + data + '\n';
+    
+    datalog += Date() + ' >>\n' + data + '\n';
 
 });
 

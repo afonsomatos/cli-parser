@@ -17,65 +17,65 @@
  */
 var Interface = function(config) {
 
-	config = config || {};
+    config = config || {};
 
-	// Name of the program 
-	this.name = config.name || "";
-	// Description (used in help default command)
-	this.desc = config.desc || "";
-	// We use "" as the default so it doesn't pass the @if (this.version)
-	this.setVersion(config.version || "");
-	
-	// Check if config.outfn is a function or isn't declared
-	if (typeof config.outfn !== 'function' && config.outfn !== undefined) {
-		var error = "Wrong argument-type given as an outfn. " +
-					"Expected 'function', got " + typeof config.outfn + ".";
-		throw new Error(error);
-	} 
+    // Name of the program 
+    this.name = config.name || "";
+    // Description (used in help default command)
+    this.desc = config.desc || "";
+    // We use "" as the default so it doesn't pass the @if (this.version)
+    this.setVersion(config.version || "");
+    
+    // Check if config.outfn is a function or isn't declared
+    if (typeof config.outfn !== 'function' && config.outfn !== undefined) {
+        var error = "Wrong argument-type given as an outfn. " +
+                    "Expected 'function', got " + typeof config.outfn + ".";
+        throw new Error(error);
+    } 
 
-	// Functions which will output results
-	this.outfnStack = config.outfn ? [config.outfn] : [];
-	
-	// Array where commands will be stored
-	this.commands = [];
+    // Functions which will output results
+    this.outfnStack = config.outfn ? [config.outfn] : [];
+    
+    // Array where commands will be stored
+    this.commands = [];
 
-	// Format errors
-	this.errors   = {
-		invalidOption:  "{option}: option invalid",
-		badCommand:     "{command}: command was not found"
-	};
-	
-	// Create default help method
-	var help = this.command('help', {
-		desc: 'Find information about the program',
-	});
-	
-	help.callBack(function(/*[opts]*/) {
-		var info = '';
+    // Format errors
+    this.errors   = {
+        invalidOption:  "{option}: option invalid",
+        badCommand:     "{command}: command was not found"
+    };
+    
+    // Create default help method
+    var help = this.command('help', {
+        desc: 'Find information about the program',
+    });
+    
+    help.callBack(function(/*[opts]*/) {
+        var info = '';
 
-		if (this.name)    info += this.name + ' ';
-		if (this.version) info += '<version ' + this.version + '>\n\n';
-		if (this.desc)    info += this.desc + '\n\n';
+        if (this.name)    info += this.name + ' ';
+        if (this.version) info += '<version ' + this.version + '>\n\n';
+        if (this.desc)    info += this.desc + '\n\n';
 
-		info += "List of available commands <command> [params]\n\n";
-		
-		var listCommands = [],
-			fmt = "{cname} {params}";
-		
-		for (var i = 1; i <= this.commands.length; i += 2) { 
-			listCommands.push([ 
-				Interface.format(fmt, this.commands[i-1]),
-				Interface.format(fmt, this.commands[i] || {cname: "", params: ""}) 
-			]);
-		}
+        info += "List of available commands <command> [params]\n\n";
+        
+        var listCommands = [],
+            fmt = "{cname} {params}";
+        
+        for (var i = 1; i <= this.commands.length; i += 2) { 
+            listCommands.push([ 
+                Interface.format(fmt, this.commands[i-1]),
+                Interface.format(fmt, this.commands[i] || {cname: "", params: ""}) 
+            ]);
+        }
 
-		info += Interface.table(listCommands, {cols: 2, padding: 5 });
-		
-		this.output(info);
-	});
+        info += Interface.table(listCommands, {cols: 2, padding: 5 });
+        
+        this.output(info);
+    });
 
 
-	return this;
+    return this;
 };
 
 /**
@@ -89,55 +89,55 @@ var Interface = function(config) {
  * @param {integer} [config.lineHeight=0] - \n{x} characters after each row
  */
 Interface.table = function(arr, config) {
-	
-	config = config || {};
+    
+    config = config || {};
 
-	var rows       = config.rows,
-		cols 	   = config.cols,
-		padding    = config.padding,
-		margin     = config.margin,
-		lineHeight = config.lineHeight;
+    var rows       = config.rows,
+        cols       = config.cols,
+        padding    = config.padding,
+        margin     = config.margin,
+        lineHeight = config.lineHeight;
  
-	if (rows === undefined) 
-		rows = arr.length;
-	
-	if (padding === undefined) 
-		padding = 2;
+    if (rows === undefined) 
+        rows = arr.length;
+    
+    if (padding === undefined) 
+        padding = 2;
  
-	if (margin === undefined) 
-		margin = 2;	
+    if (margin === undefined) 
+        margin = 2; 
  
-	lineHeight = lineHeight || 0;
-	
-	if (cols === undefined) {
-		// Find row with most elements
-		cols = arr.reduce(function(len, val) {
-			return Math.max(len, val.length);
-		}, 0);
-	}
-	
-	// Shrink desired rows
-	arr = arr.slice(0, rows);
-	
-	return arr.map(function(row, r) {	
- 		
-		return " ".repeat(margin) + row.map(function(col, c) {
-			// Handle empty/invalid (undefined) cols
-			col = col || "";
+    lineHeight = lineHeight || 0;
+    
+    if (cols === undefined) {
+        // Find row with most elements
+        cols = arr.reduce(function(len, val) {
+            return Math.max(len, val.length);
+        }, 0);
+    }
+    
+    // Shrink desired rows
+    arr = arr.slice(0, rows);
+    
+    return arr.map(function(row, r) {   
+        
+        return " ".repeat(margin) + row.map(function(col, c) {
+            // Handle empty/invalid (undefined) cols
+            col = col || "";
 
-			// Shrink desired cols
-			if (c > cols - 1) return "";
-			
-			// Find the element with greatest length in column
-			var maxLen = arr.reduce(function(max, el) {
-				return Math.max(max, (el[c] || "").length);
-			}, 0)
+            // Shrink desired cols
+            if (c > cols - 1) return "";
+            
+            // Find the element with greatest length in column
+            var maxLen = arr.reduce(function(max, el) {
+                return Math.max(max, (el[c] || "").length);
+            }, 0)
 
-			return col + " ".repeat(maxLen - col.length + padding);
+            return col + " ".repeat(maxLen - col.length + padding);
  
-		}).join('');
+        }).join('');
  
-	}).join('\n'.repeat(lineHeight + 1));
+    }).join('\n'.repeat(lineHeight + 1));
 };
 
 /**
@@ -150,21 +150,21 @@ Interface.table = function(arr, config) {
  * @returns {string}
  */
 Interface.format = function(str, obj) {
-	
-	if (typeof obj !== 'object') {
-		var error = "Wrong argument-type given. Expected 'object', " +
-					"got " + typeof obj + ".";
-		throw new Error(error);
-	}
+    
+    if (typeof obj !== 'object') {
+        var error = "Wrong argument-type given. Expected 'object', " +
+                    "got " + typeof obj + ".";
+        throw new Error(error);
+    }
 
-	var search;
+    var search;
 
-	Object.keys(obj).forEach(function (key) {
-		search = "{" + key + "}";
-		while (str.includes(search)) str = str.replace(search, obj[key]);
-	});
-	
-	return str;
+    Object.keys(obj).forEach(function (key) {
+        search = "{" + key + "}";
+        while (str.includes(search)) str = str.replace(search, obj[key]);
+    });
+    
+    return str;
 };
 
 /**
@@ -173,16 +173,16 @@ Interface.format = function(str, obj) {
  * @param {Object} obj - Format object
  */
 Interface.prototype.sendError = function(errName, obj) {
-		
-	if (typeof this.errors[errName] === 'function') {
-		// Calls the handler
-		this.errors[errName]();
-	} else {
-		// Or formats the error value
-		this.output(Interface.format(this.errors[errName], obj));
-	}
-	
-	return this;
+        
+    if (typeof this.errors[errName] === 'function') {
+        // Calls the handler
+        this.errors[errName]();
+    } else {
+        // Or formats the error value
+        this.output(Interface.format(this.errors[errName], obj));
+    }
+    
+    return this;
 };
 
 /** 
@@ -191,17 +191,17 @@ Interface.prototype.sendError = function(errName, obj) {
  * @param {string:function} - Formatting or callBack
  */
 Interface.prototype.error = function (errName, format /* or callBack */) {
-	
-	if (typeof format !== 'function' && typeof format !== 'string') {
-		var error = "Invalid argument-type given (" + format + "), " +
-					"should be (function|string)."
+    
+    if (typeof format !== 'function' && typeof format !== 'string') {
+        var error = "Invalid argument-type given (" + format + "), " +
+                    "should be (function|string)."
 
-		throw new Error(error);
-	}
+        throw new Error(error);
+    }
 
-	this.errors[errName] = format;		
-	
-	return this;
+    this.errors[errName] = format;      
+    
+    return this;
 };
 
 /**
@@ -215,22 +215,22 @@ Interface.prototype.error = function (errName, format /* or callBack */) {
  * @param {outfn:outfn[]} callback - Function(s) to be added to the output stack
  */
 Interface.prototype.addOutfn = function(fn) {
-	
-	if (fn instanceof Array) {
+    
+    if (fn instanceof Array) {
 
-		fn.forEach(function(f) { this.addOutfn(f); }, this);
+        fn.forEach(function(f) { this.addOutfn(f); }, this);
 
-	} else if(typeof fn !== 'function') {
+    } else if(typeof fn !== 'function') {
 
-		throw new Error("Invalid argument-type given. Expected 'function', got " + typeof fn + ".");
+        throw new Error("Invalid argument-type given. Expected 'function', got " + typeof fn + ".");
 
-	} else if (!this.checkOutfn(fn)) { // Don't double-add the same function
-			// Add to the stack
-			this.outfnStack.push(fn);
+    } else if (!this.checkOutfn(fn)) { // Don't double-add the same function
+            // Add to the stack
+            this.outfnStack.push(fn);
 
-	}
+    }
 
-	return this;
+    return this;
 };
 
 /**
@@ -239,11 +239,11 @@ Interface.prototype.addOutfn = function(fn) {
  * @returns {boolean|function} false if function not found or the function itself
  */
 Interface.prototype.checkOutfn = function(fn) {
-	// Not chainable method
-	return this.outfnStack.reduce(function(val, outfn) {
-		if (outfn === fn) return outfn;
-		return val;
-	}, false);
+    // Not chainable method
+    return this.outfnStack.reduce(function(val, outfn) {
+        if (outfn === fn) return outfn;
+        return val;
+    }, false);
 };
 
 /**
@@ -251,9 +251,9 @@ Interface.prototype.checkOutfn = function(fn) {
  * @param {function} fn
  */
 Interface.prototype.removeOutfn = function(fn) {
-	this.outfnStack = this.outfnStack.filter(function(f) { return f !== fn; });
+    this.outfnStack = this.outfnStack.filter(function(f) { return f !== fn; });
 
-	return this;
+    return this;
 };
 
 /**
@@ -261,12 +261,12 @@ Interface.prototype.removeOutfn = function(fn) {
  * @param {string} data
  */
 Interface.prototype.output = function(data) {
-	// Send to each outfn function the arguments
-	this.outfnStack.forEach(function(fn) {
-		fn(data);
-	});
+    // Send to each outfn function the arguments
+    this.outfnStack.forEach(function(fn) {
+        fn(data);
+    });
 
-	return this;
+    return this;
 };
 
 /**
@@ -274,15 +274,15 @@ Interface.prototype.output = function(data) {
  * @param {string|integer[]} version
  */
 Interface.prototype.setVersion = function(version) {
-	
-	if (version instanceof Array) {
-		// Extensive format
-		this.version = version.join('.');
-	} else {
-		this.version = String(version);
-	}
-	
-	return this;
+    
+    if (version instanceof Array) {
+        // Extensive format
+        this.version = version.join('.');
+    } else {
+        this.version = String(version);
+    }
+    
+    return this;
 };
 
 /**
@@ -308,43 +308,43 @@ Interface.prototype.setVersion = function(version) {
  * @returns {Object} Interface.Command instance 
  */
 Interface.prototype.command = function(cname, config) {
-	
-	config = config || {};
+    
+    config = config || {};
 
-	if (!(/^(?=.*[a-zA-Z])([\w\d-_]+)$/.test(cname))) {
-		var error = 'Invalid command name given (' + cname +')' +
-					' - should contain at least one alpha-char and only ' +
-					'A-Za-z_-0-9 characters.';
+    if (!(/^(?=.*[a-zA-Z])([\w\d-_]+)$/.test(cname))) {
+        var error = 'Invalid command name given (' + cname +')' +
+                    ' - should contain at least one alpha-char and only ' +
+                    'A-Za-z_-0-9 characters.';
 
-		throw new Error(error);
-	}
-	
-	if (typeof config === "function") {
-		config = {callBack: config};
-	}
+        throw new Error(error);
+    }
+    
+    if (typeof config === "function") {
+        config = {callBack: config};
+    }
 
-	var params      =  config.params   || "",
-		desc        =  config.desc     || "",
-		options		=  config.options  || [],
-		params      =  config.params   ? [config.params  ] : [],
- 		callBack	=  config.callBack ? [config.callBack] : [];
-	
-	var command = new Interface.Command({
-		cname: 	   cname, 
-		params:    params, // store params in params ;*
-		desc:      desc,
-		callStack: callBack, // store callBack in callStack
-		options:   options
-	}, this);
-	
-	// Overwrite existing commands
-	this.commands = this.commands.filter(function(obj) {
-		obj.cname !== cname;
-	});
+    var params      =  config.params   || "",
+        desc        =  config.desc     || "",
+        options     =  config.options  || [],
+        params      =  config.params   ? [config.params  ] : [],
+        callBack    =  config.callBack ? [config.callBack] : [];
+    
+    var command = new Interface.Command({
+        cname:     cname, 
+        params:    params, // store params in params ;*
+        desc:      desc,
+        callStack: callBack, // store callBack in callStack
+        options:   options
+    }, this);
+    
+    // Overwrite existing commands
+    this.commands = this.commands.filter(function(obj) {
+        obj.cname !== cname;
+    });
 
-	this.commands.push(command);
+    this.commands.push(command);
 
-	return command;	
+    return command; 
 };
 
 /**
@@ -353,11 +353,11 @@ Interface.prototype.command = function(cname, config) {
  * @returns {boolean|function} false if function not found or the function itself
  */
 Interface.prototype.checkCommand = function(cname) {
-	// Not chainable method
-	return this.commands.reduce(function(val, cmd) {
-		if (cmd.cname === cname) return cmd;
-		return val;
-	}, false);
+    // Not chainable method
+    return this.commands.reduce(function(val, cmd) {
+        if (cmd.cname === cname) return cmd;
+        return val;
+    }, false);
 };
 
 /**
@@ -365,120 +365,120 @@ Interface.prototype.checkCommand = function(cname) {
  * @param {string} input
  */
 Interface.prototype.parse = function(input) {
-	
-	var strings = input.trim().match(/(?:[^\s"]+|"[^"]*")+/g),
-		args    = [],
-		error   = false;
+    
+    var strings = input.trim().match(/(?:[^\s"]+|"[^"]*")+/g),
+        args    = [],
+        error   = false;
 
-	var options = [];
+    var options = [];
 
-	var command = this.checkCommand(strings[0]);
+    var command = this.checkCommand(strings[0]);
 
-	if (!command) {
+    if (!command) {
 
-		this.sendError('badCommand', {command: strings[0]});
+        this.sendError('badCommand', {command: strings[0]});
 
-		return this;
+        return this;
 
-	} else {
+    } else {
 
-		for (var i = 0; i < strings.length; i++) {
-			var str = strings[i], parts;
+        for (var i = 0; i < strings.length; i++) {
+            var str = strings[i], parts;
 
-			if (str[0] === '-') {
-				// Option path
-				parts = str.split('=');
-				str   = parts[0].slice(1);
-		
-				if (str[0] === '-') {
+            if (str[0] === '-') {
+                // Option path
+                parts = str.split('=');
+                str   = parts[0].slice(1);
+        
+                if (str[0] === '-') {
 
-					str = str.slice(1);
+                    str = str.slice(1);
 
-				} else {
+                } else {
 
-					if (str.length > 1 && !command.checkOption(str)) {
+                    if (str.length > 1 && !command.checkOption(str)) {
 
-						for (var e = 0, optList = str.split(''), chr;
-								 e < optList.length; e++) {
+                        for (var e = 0, optList = str.split(''), chr;
+                                 e < optList.length; e++) {
 
-							chr = optList[e];
+                            chr = optList[e];
 
-							if (!/[A-Za-z]/.test(chr)) {
+                            if (!/[A-Za-z]/.test(chr)) {
 
-								this.sendError('invalidOption', {option: chr});
-								break;
+                                this.sendError('invalidOption', {option: chr});
+                                break;
 
-							}
+                            }
 
-							options[chr] = null;
-						}
-			
-						continue;
-					}
+                            options[chr] = null;
+                        }
+            
+                        continue;
+                    }
 
-				}
+                }
 
-				options[str] = parts[1] || null;
+                options[str] = parts[1] || null;
 
-			} else {
-				// Valid argument
-				args.push(str);
-			}
-		}
+            } else {
+                // Valid argument
+                args.push(str);
+            }
+        }
 
-	}
-	
-	/** @function options.hasOption
-	 *  @param {string} opt
-	 *  @returns {boolean}
+    }
+    
+    /** @function options.hasOption
+     *  @param {string} opt
+     *  @returns {boolean}
      */
-	var hasOption = function (opt) {
-			
-			return getOption(opt) !== undefined; 
-		},
-		
-		/** @function options.getOption
+    var hasOption = function (opt) {
+            
+            return getOption(opt) !== undefined; 
+        },
+        
+        /** @function options.getOption
          *  @param {string} opt
          *  @param {function} wrapper - Wraps the returned value
          *  @returns {string|null} Null if the option has no value set
          */
-		getOption = function (opt, fn) {
-			
-			var value;
-			
-			command.options.forEach(function(o) {
-				// Search both short and long type		
-				if (o.short === opt || o.long === opt) {
-					value = options[o.long];
-					if (value === undefined) {
-						value = options[o.short];
-					}
-				}
+        getOption = function (opt, fn) {
+            
+            var value;
+            
+            command.options.forEach(function(o) {
+                // Search both short and long type      
+                if (o.short === opt || o.long === opt) {
+                    value = options[o.long];
+                    if (value === undefined) {
+                        value = options[o.short];
+                    }
+                }
 
-			});
-			
-			if (value === undefined) {
-				value = options[opt];
-			}
+            });
+            
+            if (value === undefined) {
+                value = options[opt];
+            }
 
-			if (typeof fn === "function") {
-				return fn.call(this, value);
-			}
-			
-			return value;
+            if (typeof fn === "function") {
+                return fn.call(this, value);
+            }
+            
+            return value;
 
-		};
-		
-	Object.defineProperties(options, {
-		'has': { value: hasOption },
-		'get': { value: getOption }
-	});
-	
-	command.callStack.forEach(function(clbck) {
-		clbck.apply(command, [options].concat(args.slice(1)));
-	});
-	
-	return this;
+        };
+        
+    Object.defineProperties(options, {
+        'has': { value: hasOption },
+        'get': { value: getOption }
+    });
+    
+    command.callStack.forEach(function(clbck) {
+        clbck.apply(command, [options].concat(args.slice(1)));
+    });
+    
+    return this;
 };
 
 /**
@@ -493,57 +493,57 @@ Interface.prototype.parse = function(input) {
  * @param {function} [config.callBack]
  */
 Interface.Command = function(config, _interface) {
-	// _interface is a reference to the Interface instance that
-	// initiated this call Interface.Command({}, cli)
+    // _interface is a reference to the Interface instance that
+    // initiated this call Interface.Command({}, cli)
 
-	this.cname       = config.cname;
-	this.params		 = config.params;
-	this.desc        = config.desc;
-	this.options 	 = config.options;
+    this.cname       = config.cname;
+    this.params      = config.params;
+    this.desc        = config.desc;
+    this.options     = config.options;
 
-	this.callStack  = [];
+    this.callStack  = [];
 
-	if (config.callStack) {
-		this.callStack = config.callStack;
-	}
+    if (config.callStack) {
+        this.callStack = config.callStack;
+    }
 
-	if (config.callBack) {
-		this.callStack.push(config.callBack);
-	}
+    if (config.callBack) {
+        this.callStack.push(config.callBack);
+    }
 
-	// Default help option
-	this
-		.option('h', 'help', '', 'Show options taken by the command')
-		.callBack(function help(opts) {
-		
-			if (!opts.has('help')) return;
+    // Default help option
+    this
+        .option('h', 'help', '', 'Show options taken by the command')
+        .callBack(function help(opts) {
+        
+            if (!opts.has('help')) return;
 
-			var info = "";
-			
-			
-			this.params.forEach(function(p, i) {
-				info += (!i ? 'Usage: ' : '  or:  ') +
-						this.cname                  +
-						(this.options.length ? ' [OPTION]... ' : '') +
-						(p || "") + '\n';
-			}, this);
+            var info = "";
+            
+            
+            this.params.forEach(function(p, i) {
+                info += (!i ? 'Usage: ' : '  or:  ') +
+                        this.cname                  +
+                        (this.options.length ? ' [OPTION]... ' : '') +
+                        (p || "") + '\n';
+            }, this);
 
-			if (this.desc) info += '\n' + this.desc + '\n';
+            if (this.desc) info += '\n' + this.desc + '\n';
 
-			var opts = this.options.map(function(o) {
-				return [
-					'-'  + o.short + ',',
-					'--' + o.long  + (o.param ? '=' + o.param : ''),
-					o.desc
-				];
-			}); 	
-				
-			info += '\n' + Interface.table(opts, {cols: 3, padding: 1})
+            var opts = this.options.map(function(o) {
+                return [
+                    '-'  + o.short + ',',
+                    '--' + o.long  + (o.param ? '=' + o.param : ''),
+                    o.desc
+                ];
+            });     
+                
+            info += '\n' + Interface.table(opts, {cols: 3, padding: 1})
 
-			_interface.output(info);
-		});
+            _interface.output(info);
+        });
 
-	return this;
+    return this;
 };
 
 /**
@@ -553,11 +553,11 @@ Interface.Command = function(config, _interface) {
  */
 Interface.Command.prototype.checkOption = function (optName) {
 
-	// Check if option exists in the current command
-	return this.options.reduce(function(p, c) {
-		if (c.long === optName || c.short === optName) return c;
-		return p;
-	}, false);
+    // Check if option exists in the current command
+    return this.options.reduce(function(p, c) {
+        if (c.long === optName || c.short === optName) return c;
+        return p;
+    }, false);
 
 };
 
@@ -566,26 +566,26 @@ Interface.Command.prototype.checkOption = function (optName) {
  * @param {string|string[]|Object|Object[]}
  */
 Interface.Command.prototype.removeOption = function (opt) {
-	
-	// Remove multiple options
-	if (opt instanceof Array) {
+    
+    // Remove multiple options
+    if (opt instanceof Array) {
 
-		opt.forEach(function(o) { this.removeOption(o); }, this);
+        opt.forEach(function(o) { this.removeOption(o); }, this);
 
-	} else {
+    } else {
 
-		optObj = typeof opt === 'object' ? opt : this.checkOption(opt);
-		
-		var i = this.options.indexOf(optObj);
+        optObj = typeof opt === 'object' ? opt : this.checkOption(opt);
+        
+        var i = this.options.indexOf(optObj);
 
-		if (i !== -1) {
-			// If it actually exists
-			this.options.splice(i, i + 1);
-		}
+        if (i !== -1) {
+            // If it actually exists
+            this.options.splice(i, i + 1);
+        }
 
-	}
-	
-	return this;
+    }
+    
+    return this;
 };
 
 /**
@@ -597,48 +597,48 @@ Interface.Command.prototype.removeOption = function (opt) {
  */
 Interface.Command.prototype.option = function(short, long, param, desc) {
 
-	if (typeof short === 'object') {
-		var obj = short;
+    if (typeof short === 'object') {
+        var obj = short;
 
-		short  = obj.short || '';
-		long   = obj.long  || '';
-		param  = obj.param || '';
-		desc   = obj.desc  || '';
-	}
-	
-	if (!short && !long) {
-		throw new Error("Option has to contain at least a short-type of long-type.")
-	}
+        short  = obj.short || '';
+        long   = obj.long  || '';
+        param  = obj.param || '';
+        desc   = obj.desc  || '';
+    }
+    
+    if (!short && !long) {
+        throw new Error("Option has to contain at least a short-type of long-type.")
+    }
 
-	if (long.length < 2) {
-		throw new Error("Long-type option should have more than one character");
-	}
+    if (long.length < 2) {
+        throw new Error("Long-type option should have more than one character");
+    }
 
-	if (short.length > 1) {
-		throw new Error("Short-type option should only have one character");
-	}
+    if (short.length > 1) {
+        throw new Error("Short-type option should only have one character");
+    }
 
-	if (short && !/[a-zA-Z]/.test(short)) {
-		throw new Error("Short-type option (" + short + ") shouldn't contain non-alpha characters.");
-	}
+    if (short && !/[a-zA-Z]/.test(short)) {
+        throw new Error("Short-type option (" + short + ") shouldn't contain non-alpha characters.");
+    }
 
-	if (long && !/^[\w]+[\w\d-]*$/.test(long)) {
-		var error = "Long-type option (" + long + ") should only contain " + 
-					"-_A-Za-z0-9 characters and start with a word character";
-		throw new Error(error); 
-	}
+    if (long && !/^[\w]+[\w\d-]*$/.test(long)) {
+        var error = "Long-type option (" + long + ") should only contain " + 
+                    "-_A-Za-z0-9 characters and start with a word character";
+        throw new Error(error); 
+    }
 
-	// Delete existing options that have same short / long chars
-	this.removeOption([short, long])
+    // Delete existing options that have same short / long chars
+    this.removeOption([short, long])
 
-	this.options.push({ 
-		short: short,
-		long: long,
-		param: param,
-		desc: desc
-	});
-	
-	return this;
+    this.options.push({ 
+        short: short,
+        long: long,
+        param: param,
+        desc: desc
+    });
+    
+    return this;
 };
 
 /**
@@ -647,9 +647,9 @@ Interface.Command.prototype.option = function(short, long, param, desc) {
  */
 Interface.Command.prototype.resetCallStack = function(callStack) {
 
-	this.callStack = callStack ? callStack : [];
+    this.callStack = callStack ? callStack : [];
 
-	return this;
+    return this;
 };
 
 /**
@@ -658,25 +658,25 @@ Interface.Command.prototype.resetCallStack = function(callStack) {
  */
 Interface.Command.prototype.removeCallBack = function(fn) {
 
-	if (fn instanceof Array) {
-		// Remove every callBack in the array
-		fn.forEach(function(clbck) { 
-			this.removeCallBack(clbck);
-		}, this);
+    if (fn instanceof Array) {
+        // Remove every callBack in the array
+        fn.forEach(function(clbck) { 
+            this.removeCallBack(clbck);
+        }, this);
 
-	} else if (fn === undefined) {
-		// remove last callBack added		
-		this.callStack.pop();
+    } else if (fn === undefined) {
+        // remove last callBack added       
+        this.callStack.pop();
 
-	} else {
+    } else {
 
-		this.callStack.filter(function(clbck) {
-			return clbck !== fn;
-		});	
-		
-	}
+        this.callStack.filter(function(clbck) {
+            return clbck !== fn;
+        }); 
+        
+    }
 
-	return this;
+    return this;
 };
 
 /**
@@ -685,33 +685,33 @@ Interface.Command.prototype.removeCallBack = function(fn) {
  */
 Interface.Command.prototype.callBack = function(fn) {
 
-	if (typeof fn !== 'function') {
-		var error = "Wrong argument-type given as a callBack. Expected 'function', " +
-					"got " + typeof fn + ".";
-		throw new Error(error);
-	}
+    if (typeof fn !== 'function') {
+        var error = "Wrong argument-type given as a callBack. Expected 'function', " +
+                    "got " + typeof fn + ".";
+        throw new Error(error);
+    }
 
-	this.callStack.push(fn);
+    this.callStack.push(fn);
 
-	return this;
+    return this;
 };
 
 /**
  * Change description of the command
  */
 Interface.Command.prototype.setDesc = function(desc) {
-	this.desc = desc;
+    this.desc = desc;
 
-	return this;
+    return this;
 };
 
 /**
  * Change params of the command
  */
 Interface.Command.prototype.setParams = function(params) {
-	this.params = params;
+    this.params = params;
 
-	return this;
+    return this;
 };
 
 /**
@@ -719,9 +719,9 @@ Interface.Command.prototype.setParams = function(params) {
  * @param {string} params
  */
 Interface.Command.prototype.addParams = function(params) {
-	this.params.push(params);
+    this.params.push(params);
 
-	return this;
+    return this;
 }
 
 /**
@@ -730,15 +730,15 @@ Interface.Command.prototype.addParams = function(params) {
  */
 Interface.Command.prototype.removeParams = function(params) {
 
-	if (params instanceof Array) {
-		params.forEach(function(p) {
-			this.removeParams(p);
-		}, this); 
-	} else {
-		this.params = this.params.filter(function(p) { return p !== params; });
-	}
+    if (params instanceof Array) {
+        params.forEach(function(p) {
+            this.removeParams(p);
+        }, this); 
+    } else {
+        this.params = this.params.filter(function(p) { return p !== params; });
+    }
 
-	return this;
+    return this;
 }
 
 // Export Interface Class
