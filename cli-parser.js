@@ -339,7 +339,7 @@ Interface.prototype.command = function(cname, config) {
     
     // Overwrite existing commands
     this.commands = this.commands.filter(function(obj) {
-        obj.cname !== cname;
+        return obj.cname !== cname;
     });
 
     this.commands.push(command);
